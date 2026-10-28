@@ -45,13 +45,53 @@ function burst(n = 150) {
   g.globalAlpha = 1; requestAnimationFrame(loop);
 })();
 
+/* ---------- cinematic transition helpers ---------- */
+const ORDER = ["s-open", "s-cake", "s-letter", "s-show", "s-cards", "s-wishes", "s-final"];
+const HUE = { "s-open": 0, "s-cake": 22, "s-letter": -14, "s-show": 6, "s-cards": 30, "s-wishes": -26, "s-final": 12 };
+const wipeEl = $("#wipe");
+let wiping = false, queued = null;
+function wipe(cb) {
+  if (RM || !wipeEl) return cb();
+  if (wiping) { queued = cb; return; }      // never stack wipes — remember the last tap instead
+  wiping = true;
+  wipeEl.classList.remove("run"); void wipeEl.offsetWidth; wipeEl.classList.add("run");
+  setTimeout(cb, 400);                      // swap while the curtain fully covers
+  setTimeout(() => {
+    wiping = false; wipeEl.classList.remove("run");
+    if (queued) { const q = queued; queued = null; wipe(q); }   // replay a tap made mid-transition
+  }, 1150);
+}
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+/* split an element's text into mask-revealed words */
+function splitWords(el) {
+  if (!el || el.querySelector(".kw")) return;
+  const words = el.textContent.trim().split(/\s+/);
+  if (!words[0]) return;
+  el.innerHTML = words.map((w, i) => `<span class="kw"><span class="kw-i" style="--i:${i}">${esc(w)}</span></span>`).join(" ");
+}
+const kinetics = root => $$("[data-k]", root).forEach(splitWords);
+
 /* ---------- navigation ---------- */
 let idx = 0, playing = false, timer, pre;
+const rail = $("#rail");
+function updateRail(id) {
+  $$("#rail button").forEach(b => b.classList.toggle("on", b.dataset.go === id));
+}
 function go(id) {
   clearTimeout(timer); playing = false;
-  $$(".ch").forEach(s => s.classList.toggle("on", s.id === id));
-  const s = $("#" + id); amb(s.dataset.m); s.scrollTop = 0;
-  if (id === "s-show") initShow();
+  const cur = $$(".ch").find(s => s.classList.contains("on"));
+  const swap = () => {
+    $$(".ch").forEach(s => { s.classList.toggle("on", s.id === id); s.classList.remove("leaving", "go"); });
+    const s = $("#" + id);
+    amb(s.dataset.m); s.scrollTop = 0;
+    document.documentElement.style.setProperty("--hue", (HUE[id] || 0) + "deg");   // aurora palette shift
+    requestAnimationFrame(() => s.classList.add("go"));                            // fires kinetic type
+    updateRail(id);
+    if (id === "s-show") initShow();
+  };
+  if (cur && cur.id !== id) cur.classList.add("leaving");
+  if (!cur) { swap(); return; }             // first paint: no curtain
+  wipe(swap);
 }
 
 /* ---------- slideshow ---------- */
@@ -59,26 +99,52 @@ const N = C.photos.length;
 const chOf = i => C.photos[i].chapter || (i < Math.ceil(N / 3) ? "A" : i < Math.ceil(2 * N / 3) ? "B" : "C");
 function sched() { clearTimeout(timer); if (playing) timer = setTimeout(next, C.slideSeconds * 1000); }
 const src = (p, e) => C.photoDir + p.file.replace(/\.\w+$/, "") + "." + C.extensions[e];
+let layer = 1;
+const pics = () => [$("#pic"), $("#pic2")];
+/* two stacked layers cross-dissolve; each photo gets one of three Ken Burns paths */
 function show(i) {
-  idx = i; const p = C.photos[i], pic = $("#pic"), ph = $("#ph");
-  pic.classList.remove("in"); ph.hidden = true; pic.hidden = false;
-  pic.onload = () => requestAnimationFrame(() => pic.classList.add("in"));
-  let e = 0;  // tries each extension (jpg, webp, jpeg, png) before showing the placeholder
-  pic.onerror = () => {
-    if (++e < C.extensions.length) { pic.src = src(p, e); return; }
-    pic.hidden = true; ph.hidden = false; ph.innerHTML = `<b>❤</b><p>Memory ${pad(i + 1)}<br><small>Add ${src(p, 0)}</small></p>`;
+  idx = i;
+  const p = C.photos[i], ph = $("#ph"), [a, b] = pics();
+  const cur = layer ? b : a, nx = layer ? a : b;
+  ph.hidden = true;
+  nx.className = ""; nx.removeAttribute("width"); void nx.offsetWidth;
+  let e = 0;
+  nx.onload = () => requestAnimationFrame(() => { nx.classList.add("in"); cur.classList.remove("in"); });
+  nx.onerror = () => {
+    if (++e < C.extensions.length) { nx.src = src(p, e); return; }
+    a.classList.remove("in"); b.classList.remove("in"); ph.hidden = false;
+    ph.innerHTML = `<b>❤</b><p>Memory ${pad(i + 1)}<br><small>Add ${src(p, 0)}</small></p>`;
   };
-  pic.alt = p.caption || `Memory ${i + 1}`; pic.src = src(p, 0);
-  if (i + 1 < N) { pre = new Image(); pre.src = src(C.photos[i + 1], 0); }  // only one image preloaded
-  $("#cap").innerHTML = (p.caption || "") + (p.date ? `<small>${p.date}</small>` : "");
-  $("#cnt").textContent = `Memory ${pad(i + 1)} / ${N}`;
+  nx.alt = p.caption || `Memory ${i + 1}`;
+  nx.src = src(p, 0);
+  nx.classList.add("kb" + (1 + (i % 3)));
+  layer = 1 - layer;
+
+  if (i + 1 < N) { pre = new Image(); pre.src = src(C.photos[i + 1], 0); }   // preload only the next frame
+
+  const cap = $("#cap");
+  cap.innerHTML = (p.caption || "") + (p.date ? `<small>${p.date}</small>` : "");
+  cap.style.animation = "none"; void cap.offsetWidth; cap.style.animation = "";
+
+  const cnt = $("#cnt");
+  cnt.textContent = `Memory ${pad(i + 1)} / ${N}`;
+  cnt.style.animation = "none"; void cnt.offsetWidth; cnt.style.animation = "";
+
   $("#fill").style.width = ((i + 1) / N * 100) + "%";
   $("#chl").textContent = C.chapters[chOf(i)].title;
+  $$("#segs i").forEach((s, k) => { s.classList.toggle("on", k === i); s.classList.toggle("done", k < i); });
   sched();
+}
+function segs() {
+  const box = $("#segs");
+  if (!box || box.childElementCount) return;
+  box.innerHTML = C.photos.map(() => "<i></i>").join("");
 }
 function inter(ch, cb) {
   clearTimeout(timer); $("#player").hidden = true; $("#inter").hidden = false;
-  $("#it").textContent = C.chapters[ch].after;
+  const it = $("#it");
+  it.textContent = C.chapters[ch].after;     // plain text first…
+  splitWords(it);                            // …then split → kinetic reveal replays
   $("#ib").onclick = () => { $("#inter").hidden = true; $("#player").hidden = false; cb(); };
   $("#ib").focus();
 }
@@ -91,6 +157,7 @@ const prev = () => show(Math.max(0, idx - 1));
 function play(on) { playing = on; $("#pp").textContent = on ? "❚❚ Pause" : "▶ Play"; $("#pp").setAttribute("aria-label", on ? "Pause" : "Play"); sched(); }
 function initShow() {
   $("#intro").hidden = false; $("#player").hidden = true; $("#inter").hidden = true; play(false);
+  segs();
 }
 addEventListener("keydown", e => {
   if (!$("#s-show").classList.contains("on") || $("#player").hidden) return;
@@ -105,32 +172,32 @@ function build() {
   app.innerHTML = `
 <section class="ch" id="s-open" data-m="dust"><div class="w">
   <h2 class="fade" style="--d:.8s">${o[0]}</h2>
-  <h2 class="fade" style="--d:3.8s">${o[1]}</h2>
-  <h1 class="fade" style="--d:7s">${o[2]}</h1>
-  <p class="fade" style="--d:9s">${o[3]}</p>
-  <div class="fade" style="--d:10.5s">${gift}<br><button class="btn" data-go="s-cake">${o[4]}</button></div>
+  <h2 class="fade" style="--d:3.4s">${o[1]}</h2>
+  <h1 data-k style="--d:6.2s">${o[2]}</h1>
+  <p class="fade" style="--d:8.2s">${o[3]}</p>
+  <div class="fade" style="--d:9.6s">${gift}<br><button class="btn" data-go="s-cake">${o[4]}</button></div>
 </div></section>
 
 <section class="ch" id="s-cake" data-m="petals"><div class="w">
-  ${cake}<h1 class="big">${C.cake.title}</h1><p>${C.cake.text}</p><p style="color:var(--rg)">${C.birthday}</p>
+  ${cake}<h1 class="big" data-k>${C.cake.title}</h1><p>${C.cake.text}</p><p style="color:var(--rg)">${C.birthday}</p>
   <h2 id="cw" hidden>${C.cake.wish}</h2>
   <button class="btn" id="wishBtn">${C.cake.wishBtn}</button>
   <button class="btn g" id="cakeNext" data-go="s-letter" hidden>${C.cake.next}</button>
 </div></section>
 
 <section class="ch" id="s-letter" data-m="dust"><div class="w">
-  <div id="envBox"><h2>${C.letter.title}</h2>
+  <div id="envBox"><h2 data-k>${C.letter.title}</h2>
     <div class="env" id="env"><i></i><div class="flap"></div><span class="seal" aria-hidden="true">❤️</span></div>
     <button class="btn" id="openEnv">${C.letter.btn}</button></div>
   <div hidden id="paperBox"><div class="paper">${C.letter.body}</div><button class="btn" data-go="s-show">${C.letter.next}</button></div>
 </div></section>
 
 <section class="ch" id="s-show" data-m="dust"><div class="w">
-  <div id="intro"><h1>${C.show.title}</h1><p>${C.show.subtitle}</p><button class="btn" id="start">${C.show.start}</button></div>
+  <div id="intro"><h1 data-k>${C.show.title}</h1><p>${C.show.subtitle}</p><button class="btn" id="start">${C.show.start}</button></div>
   <div id="inter" hidden><h2 id="it"></h2><button class="btn" id="ib">${C.show.continue}</button></div>
   <div id="player" hidden>
     <p id="chl"></p>
-    <div id="stage"><div id="px"><img id="pic" alt="" decoding="async"></div><div id="ph" hidden></div></div>
+    <div id="stage"><div id="segs" aria-hidden="true"></div><div id="px"><img id="pic" alt="" decoding="async"><img id="pic2" alt="" decoding="async"></div><div id="ph" hidden></div></div>
     <p id="cap"></p><p id="cnt"></p><div id="bar"><i id="fill"></i></div>
     <div><button class="btn g" id="pv">◀ Previous</button><button class="btn" id="pp">▶ Play</button><button class="btn g" id="nx">Next ▶</button>
     <button class="btn g" id="fs">⛶ Full screen</button><button class="btn g" id="rs">↺ Restart</button></div>
@@ -138,13 +205,13 @@ function build() {
 </div></section>
 
 <section class="ch" id="s-cards" data-m="dust"><div class="w">
-  <h1>${C.cardsTitle}</h1>
+  <h1 data-k>${C.cardsTitle}</h1>
   <div class="cards">${C.cards.map((t, i) => `<div class="card" style="--i:${i}">${t}</div>`).join("")}</div>
   <button class="btn" data-go="s-wishes">${C.cardsNext}</button>
 </div></section>
 
 <section class="ch" id="s-wishes" data-m="stars"><div class="w">
-  <h2>${C.wishesTitle}</h2><div id="wt" aria-live="polite"></div>
+  <h2 data-k>${C.wishesTitle}</h2><div id="wt" aria-live="polite"></div>
   <button class="btn" id="wb">${C.wishesBtn}</button>
 </div></section>
 
@@ -159,6 +226,8 @@ function build() {
   <button class="btn g fade" id="rp" style="--d:${5 + F.lines.length * 3}s">${F.replay}</button>
 </div></div></section>`;
 
+  kinetics(app);
+
   /* chapter 2 */
   $("#wishBtn").onclick = () => {
     $("#s-cake").classList.add("out"); $("#cw").hidden = false; $("#cakeNext").hidden = false; $("#wishBtn").hidden = true;
@@ -167,10 +236,10 @@ function build() {
   /* chapter 3 */
   $("#openEnv").onclick = () => {
     $("#env").classList.add("open"); $("#openEnv").hidden = true; if (!RM) burst(40);
-    setTimeout(() => { $("#envBox").hidden = true; $("#paperBox").hidden = false; }, RM ? 0 : 1400);
+    setTimeout(() => { $("#envBox").hidden = true; $("#paperBox").hidden = false; kinetics($("#paperBox")); }, RM ? 0 : 1400);
   };
   /* chapter 4 */
-  $("#start").onclick = () => { $("#intro").hidden = true; $("#player").hidden = false; show(0); };
+  $("#start").onclick = () => { $("#intro").hidden = true; $("#player").hidden = false; segs(); show(0); };
   $("#nx").onclick = next; $("#pv").onclick = prev; $("#pp").onclick = () => play(!playing);
   $("#rs").onclick = () => { play(false); show(0); };
   $("#fs").onclick = () => document.fullscreenElement ? document.exitFullscreen() : ($("#stage").requestFullscreen || (() => {})).call($("#stage"));
@@ -180,24 +249,42 @@ function build() {
   let wi = 0;
   $("#wb").onclick = () => {
     if (wi >= C.wishes.length) return go("s-final");
-    $("#wt").innerHTML = `<p class="fade" style="--d:0s">${C.wishes[wi++]}</p>`;
+    const wt = $("#wt");
+    wt.innerHTML = ""; wt.textContent = C.wishes[wi++];
+    splitWords(wt);
+    if (!RM) burst(18);
     $("#wb").textContent = wi >= C.wishes.length ? C.wishesDone : C.wishesMore;
   };
   /* chapter 7 */
   $("#og").onclick = () => {
     $("#scene").classList.add("open"); $("#og").hidden = true; if (!RM) burst(180);
-    setTimeout(() => { $("#fin").classList.add("on"); $("#fin").scrollTop = 0; }, RM ? 0 : 1600);
+    setTimeout(() => { $("#fin").classList.add("on"); $("#fin").scrollTop = 0; kinetics($("#fin")); }, RM ? 0 : 1600);
   };
   $("#rp").onclick = () => { build(); go("s-open"); };
 }
 
+/* ---------- story rail ---------- */
+rail.innerHTML = ORDER.map(id => `<button type="button" data-go="${id}" aria-label="${(C.chapters && C.chapters[id]) || id.replace("s-", "")}"></button>`).join("");
+rail.onclick = e => { const b = e.target.closest("button[data-go]"); if (b) go(b.dataset.go); };
+
 /* ---------- music (only on explicit click) ---------- */
-const au = new Audio(); au.loop = true; au.preload = "none"; au.volume = C.music.volume; if (C.music.file) au.src = C.music.file;
+const au = new Audio(); au.loop = true; au.preload = "none"; au.volume = 0;
+if (C.music.file) au.src = C.music.file;
 const mb = $("#mus"), label = (on, t) => { mb.textContent = t || (on ? "♪ Music on" : "♪ Music off"); mb.setAttribute("aria-pressed", on); };
+let ramp;
+const fadeTo = target => {                       // soft 1.6 s volume ramp
+  clearInterval(ramp);
+  ramp = setInterval(() => {
+    const d = target - au.volume;
+    if (Math.abs(d) < .02) { au.volume = target; clearInterval(ramp); return; }
+    au.volume = Math.min(1, Math.max(0, au.volume + d * .12));
+  }, 40);
+};
 mb.onclick = () => {
   if (!au.paused) { au.pause(); return label(false); }
   if (!C.music.file) return label(false, "♪ Add a music file");
-  au.play().then(() => label(true)).catch(() => { label(false, "♪ Music file not found"); setTimeout(() => label(false), 3000); });
+  au.volume = 0;
+  au.play().then(() => { fadeTo(C.music.volume); label(true); }).catch(() => { label(false, "♪ Music file not found"); setTimeout(() => label(false), 3000); });
 };
 
 app.onclick = e => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); };

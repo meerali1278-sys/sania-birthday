@@ -1,7 +1,6 @@
 // ===== EDIT EVERYTHING HERE =====
 window.CONFIG = (() => {
   const wife = "Sania", husband = "Muhammad Ali";
-  const pad = n => String(n).padStart(2, "0");
 
   // Optional per-photo details. Keys are photo numbers 1–70.
   // Example: 7: { caption: "Our favorite evening", date: "June 2023", chapter: "A" }
@@ -71,7 +70,7 @@ ${husband} ❤️`
     },
     // photos-01.jpg ... photos-70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
     photos: Array.from({ length: 70 }, (_, i) =>
-      Object.assign({ file: `photos-${pad(i + 1)}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
+      Object.assign({ file: `photos-${String(i + 1).padStart(2, "0")}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
 
     cardsTitle: "Ten Things That Make You Special",
     cardsNext: "Continue",

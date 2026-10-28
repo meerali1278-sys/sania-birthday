@@ -9,7 +9,7 @@ music/    <- optional song
 ```
 
 ## 1. Add the 70 photographs
-1. Name them `photo-01.jpg`, `photo-02.jpg` … `photo-70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern.)
+1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
 2. Put them in the `photos/` folder.
 3. Phone photos are often 3–8 MB, which is slow. Resize them first (about 1600 px on the long side, under 500 KB each). Free tool: https://squoosh.app (keep JPG, or choose WebP).
 
@@ -28,7 +28,7 @@ Nothing is invented. Anything you leave empty is simply not shown.
 Open `config.js`. Names, birthday, the letter, the ten cards, the wishes and the final message are all there. Save and refresh.
 
 ## 3. Add background music (optional)
-Copy an `.mp3` you have the right to use to `music/song.mp3` (or change `music.file` in `config.js`). Music never starts by itself: the visitor taps the **♪ Music** button.
+Copy a song you have the right to use to `music/song.mp4` (an `.mp3` works too — just update `music.file` in `config.js` to match). Music never starts by itself: the visitor taps the **♪ Music** button.
 
 ## 4. Test locally
 Double-click `index.html`, or for the most accurate test run this in the project folder and open http://localhost:8000

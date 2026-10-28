@@ -68,9 +68,9 @@ ${husband} ❤️`
       B: { title: "Little Moments, Beautiful Memories 🌹", after: "Some moments become memories. Some memories become priceless." },
       C: { title: "70 Memories, One Special Person 👑", after: "Seventy pictures, but not enough to describe how special you are. ❤️" }
     },
-    // 1.jpg ... 70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
+    // photos-01.jpg ... photos-70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
     photos: Array.from({ length: 70 }, (_, i) =>
-      Object.assign({ file: `${i + 1}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
+      Object.assign({ file: `photos-${String(i + 1).padStart(2, "0")}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
 
     cardsTitle: "Ten Things That Make You Special",
     cardsNext: "Continue",

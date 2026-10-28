@@ -9,11 +9,12 @@ music/    <- optional song
 ```
 
 ## 1. Add the 70 photographs
-1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
+1. Name them `photos-01.jpg`, `photos-02.jpg` … `photos-70.jpg` (two-digit numbers, zero-padded). JPG, WebP, JPEG and PNG all work — just keep the same name pattern, so `photos-01.webp` is fine too.
 2. Put them in the `photos/` folder.
 3. Phone photos are often 3–8 MB, which is slow. Resize them first (about 1600 px on the long side, under 500 KB each). Free tool: https://squoosh.app (keep JPG, or choose WebP).
 
 Missing photos show a placeholder, so you can add them gradually. Only the current and next photo are loaded at any time.
+The site builds each filename from the photo number in `config.js` (`photos-01.jpg`, `photos-02.jpg`, …), so the names and the numbering must match exactly.
 Chapters: A = 1–24, B = 25–47, C = 48–70.
 
 Captions, dates and chapters are optional. In `config.js`, fill in `details`:

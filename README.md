@@ -4,9 +4,13 @@ A cinematic birthday website: plain HTML, CSS and JavaScript. No backend, no bui
 
 ```
 index.html  style.css  script.js  config.js  README.md
-photos/   <- your 70 images
-music/    <- optional song
+photos/         <- your 70 images
+music/          <- optional song
+favicon.svg     <- heart icon in the browser tab
+og-image.jpg    <- the preview card shown when the link is shared
 ```
+
+The opening screen also shows a **live countdown** to her birthday (from `birthdayISO` in `config.js`), which turns into a "Today is the day" message once it arrives.
 
 ## 1. Add the 70 photographs
 1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
@@ -48,5 +52,14 @@ Repository **Settings → Pages → Build and deployment → Source: GitHub Acti
 Watch it under the **Actions** tab; when the *Deploy site to GitHub Pages* run goes green your site is at `https://YOUR-USERNAME.github.io/sania-birthday/`.
 Prefer the classic setup instead? Choose **Source: Deploy from a branch → Branch: `main`, folder `/ (root)`** and the workflow is simply not needed.
 
-## 7. Test on a phone
+## 7. The link preview she will see
+When you send the link on WhatsApp or iMessage, a card appears with `og-image.jpg`.
+
+**Important:** social apps need the *full* address, so once your site is live open `index.html` and replace both `content="og-image.jpg"` lines with the complete URL, e.g.
+```html
+<meta property="og:image" content="https://YOUR-USERNAME.github.io/sania-birthday/og-image.jpg">
+```
+If a preview looks out of date after an edit, WhatsApp caches it for a while — add `?v=2` to the link when you resend.
+
+## 8. Test on a phone
 Open that link on your phone (or scan it as a QR code). Check: opening animation, music button, each chapter, swiping through photos with the buttons, full screen, and the final gift. If an update doesn't appear, refresh twice.

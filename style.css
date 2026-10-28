@@ -56,5 +56,11 @@ p{margin:0 0 1rem}
 #fin p.l{font:500 clamp(1.25rem,3.6vw,1.7rem)/1.6 "Cormorant Garamond",serif;white-space:pre-line}
 .heart{font-size:4rem;color:var(--rg);filter:drop-shadow(0 0 24px var(--rg));animation:hb 1.6s ease-in-out infinite}
 @keyframes hb{50%{transform:scale(1.15)}}
+/* countdown */
+.cd{display:flex;justify-content:center;gap:clamp(.5rem,3vw,1.4rem);margin-top:1.6rem;min-height:4.2rem;flex-wrap:wrap}
+.cd-u{display:flex;flex-direction:column;align-items:center;min-width:clamp(3.4rem,15vw,5rem)}
+.cd-u b{font:500 clamp(1.7rem,6vw,2.6rem)/1 "Cormorant Garamond",Georgia,serif;color:var(--au);font-variant-numeric:tabular-nums;text-shadow:0 0 22px #d8b56d66}
+.cd-u i{font:400 .68rem/1 Jost,sans-serif;font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:var(--rg);margin-top:.5rem}
+.cd-today{margin:0;font:italic 500 clamp(1.2rem,4vw,1.6rem) "Cormorant Garamond",serif;color:var(--au)}
 .mus{position:fixed;z-index:9;top:max(.8rem,env(safe-area-inset-top));right:.8rem;font:500 .85rem Jost;color:var(--au);background:#09090dcc;border:1px solid var(--au);border-radius:99px;padding:.45rem .9rem;cursor:pointer;min-height:36px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}.fade,.card{opacity:1}}

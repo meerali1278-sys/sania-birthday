@@ -10,6 +10,13 @@ window.CONFIG = (() => {
   return {
     wife, husband,
     birthday: "November 4, 2026",
+    // Used for the live countdown on the opening screen.
+    birthdayISO: "2026-11-04T00:00:00",
+    countdown: {
+      title: "Only a few days until your day",
+      today: "Today is the day. Happy Birthday, my love. ❤️",
+      labels: ["days", "hours", "minutes", "seconds"]
+    },
     slideSeconds: 5,
     photoDir: "photos/",
     extensions: ["jpg", "webp", "jpeg", "png"],   // file types the site will look for

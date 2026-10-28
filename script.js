@@ -99,16 +99,35 @@ addEventListener("keydown", e => {
   else if (e.key.toLowerCase() === "f") $("#fs").click();
 });
 
+/* ---------- countdown ---------- */
+const bday = new Date(C.birthdayISO);
+function tickCountdown() {
+  const cdBox = $("#cd");
+  if (!cdBox) return;
+  const left = bday - Date.now();
+  if (left <= 0) {
+    cdBox.innerHTML = `<p class="cd-today">${C.countdown.today}</p>`;
+    clearInterval(cdTimer);
+    return;
+  }
+  const s = Math.floor(left / 1000);
+  const v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+  cdBox.innerHTML = v.map((n, i) =>
+    `<span class="cd-u"><b>${pad(n)}</b><i>${C.countdown.labels[i]}</i></span>`).join("");
+}
+let cdTimer = null;
+
 /* ---------- build ---------- */
 function build() {
   const o = C.opening, F = C.final;
   app.innerHTML = `
 <section class="ch" id="s-open" data-m="dust"><div class="w">
   <h2 class="fade" style="--d:.8s">${o[0]}</h2>
-  <h2 class="fade" style="--d:3.8s">${o[1]}</h2>
-  <h1 class="fade" style="--d:7s">${o[2]}</h1>
-  <p class="fade" style="--d:9s">${o[3]}</p>
-  <div class="fade" style="--d:10.5s">${gift}<br><button class="btn" data-go="s-cake">${o[4]}</button></div>
+  <h2 class="fade" style="--d:3.4s">${o[1]}</h2>
+  <h1 class="fade" style="--d:6s">${o[2]}</h1>
+  <p class="fade" style="--d:7.8s">${o[3]}</p>
+  <div class="fade" style="--d:9s">${gift}<br><button class="btn" data-go="s-cake">${o[4]}</button></div>
+  <div id="cd" class="cd fade" style="--d:10.2s" aria-live="polite"></div>
 </div></section>
 
 <section class="ch" id="s-cake" data-m="petals"><div class="w">
@@ -189,6 +208,9 @@ function build() {
     setTimeout(() => { $("#fin").classList.add("on"); $("#fin").scrollTop = 0; }, RM ? 0 : 1600);
   };
   $("#rp").onclick = () => { build(); go("s-open"); };
+
+  /* countdown */
+  clearInterval(cdTimer); tickCountdown(); cdTimer = setInterval(tickCountdown, 1000);
 }
 
 /* ---------- music (only on explicit click) ---------- */

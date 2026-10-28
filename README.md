@@ -9,7 +9,7 @@ music/    <- optional song
 ```
 
 ## 1. Add the 70 photographs
-1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
+1. Name them `photos-01.jpg`, `photos-02.jpg` … `photos-70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `photos-01.webp` is fine too.)
 2. Put them in the `photos/` folder.
 3. Phone photos are often 3–8 MB, which is slow. Resize them first (about 1600 px on the long side, under 500 KB each). Free tool: https://squoosh.app (keep JPG, or choose WebP).
 

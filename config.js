@@ -1,7 +1,6 @@
 // ===== EDIT EVERYTHING HERE =====
 window.CONFIG = (() => {
   const wife = "Sania", husband = "Muhammad Ali";
-  const pad = n => String(n).padStart(2, "0");
 
   // Optional per-photo details. Keys are photo numbers 1–70.
   // Example: 7: { caption: "Our favorite evening", date: "June 2023", chapter: "A" }
@@ -14,7 +13,7 @@ window.CONFIG = (() => {
     slideSeconds: 5,
     photoDir: "photos/",
     extensions: ["jpg", "webp", "jpeg", "png"],   // file types the site will look for
-    music: { file: "music/song.mp3", volume: 0.4 },   // put your mp3 in /music, or set file: ""
+    music: { file: "music/song.mp3", volume: 0.4 },   // put your song in /music, or set file: ""
 
     opening: [
       "Someone Special Was Born...",
@@ -69,9 +68,9 @@ ${husband} ❤️`
       B: { title: "Little Moments, Beautiful Memories 🌹", after: "Some moments become memories. Some memories become priceless." },
       C: { title: "70 Memories, One Special Person 👑", after: "Seventy pictures, but not enough to describe how special you are. ❤️" }
     },
-    // photo-01.jpg ... photo-70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
+    // 1.jpg ... 70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
     photos: Array.from({ length: 70 }, (_, i) =>
-      Object.assign({ file: `photo-${pad(i + 1)}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
+      Object.assign({ file: `${i + 1}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
 
     cardsTitle: "Ten Things That Make You Special",
     cardsNext: "Continue",

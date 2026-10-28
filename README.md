@@ -81,10 +81,11 @@ Prefer the classic setup instead? Choose **Source: Deploy from a branch → Bran
 ## 7. The link preview she will see
 When you send the link on WhatsApp or iMessage, a card appears with `og-image.jpg`.
 
-**Important:** social apps need the *full* address, so once your site is live open `index.html` and replace both `content="og-image.jpg"` lines with the complete URL, e.g.
+The full address is already filled in inside `index.html`:
 ```html
-<meta property="og:image" content="https://YOUR-USERNAME.github.io/sania-birthday/og-image.jpg">
+<meta property="og:image" content="https://meerali1278-sys.github.io/sania-birthday/og-image.jpg">
 ```
+If the site ever moves to a new address, update that line (and the `twitter:image` one below it).
 If a preview looks out of date after an edit, WhatsApp caches it for a while — add `?v=2` to the link when you resend.
 
 ## 8. Test on a phone

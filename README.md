@@ -1,6 +1,11 @@
-# 70 Memories, One Love — Sania ❤️
+# Letters & Polaroids — for Sania ❤️
 
-A cinematic birthday website: plain HTML, CSS and JavaScript. No backend, no build step, works on GitHub Pages.
+A birthday website styled like a handmade scrapbook: cream paper, washi tape, tilted
+polaroids and handwritten notes. Plain HTML, CSS and JavaScript — no backend, no build
+step, works on GitHub Pages.
+
+The album runs in seven pages: **cover → cake → letter → 70 polaroids → ten things I love →
+wishes → final letter**.
 
 ```
 index.html  style.css  script.js  config.js  README.md
@@ -10,7 +15,21 @@ favicon.svg     <- heart icon in the browser tab
 og-image.jpg    <- the preview card shown when the link is shared
 ```
 
-The opening screen also shows a **live countdown** to her birthday (from `birthdayISO` in `config.js`), which turns into a "Today is the day" message once it arrives.
+The cover also shows a **live countdown** to her birthday (from `birthdayISO` in
+`config.js`), which turns into a "Today is the day" message once it arrives.
+
+**The look** lives entirely in `style.css`, at the top in `:root` — five colours control
+the whole album:
+
+| Variable | Used for |
+| --- | --- |
+| `--paper` / `--paper-2` | cream page background |
+| `--ink` / `--ink-soft` | body text and quiet text |
+| `--rose` / `--rose-deep` | buttons, seals, captions |
+| `--sage`, `--gold` | tape and card accents |
+
+Fonts are Playfair Display (headings), Caveat (handwriting) and Karla (small text),
+loaded from Google Fonts.
 
 ## 1. Add the 70 photographs
 1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
@@ -29,7 +48,14 @@ const details = {
 Nothing is invented. Anything you leave empty is simply not shown.
 
 ## 2. Edit the messages
-Open `config.js`. Names, birthday, the letter, the ten cards, the wishes and the final message are all there. Save and refresh.
+Open `config.js`. Everything is there: the cover wording (`hero`), the cake, the letter,
+the ten cards, the wishes and the final message. Save and refresh.
+
+Two optional extras:
+- `captionFallbacks` — the short handwritten lines shown under a photo when you haven't
+  written a real caption for it. Replace them with your own if you like.
+- `details` — per-photo captions, e.g. `7: { caption: "The evening we laughed till we cried", date: "June 2023" }`.
+  Real captions always beat the fallback lines.
 
 ## 3. Add background music (optional)
 Copy a song you have the right to use to `music/song.mp3` (or change `music.file` in `config.js` to whatever you named it). Music never starts by itself: the visitor taps the **♪ Music** button.
@@ -39,7 +65,7 @@ Double-click `index.html`, or for the most accurate test run this in the project
 ```
 python3 -m http.server 8000
 ```
-Keys in the slideshow: ← → move, Space plays/pauses, F is full screen.
+Keys in the album: ← → move, Space plays/pauses, F is full screen.
 
 ## 5. Upload to GitHub
 1. Create a free account at github.com and click **New repository** (name it e.g. `sania-birthday`, Public).

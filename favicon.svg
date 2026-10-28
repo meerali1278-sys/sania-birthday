@@ -1,5 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<rect width="64" height="64" rx="12" fill="#F8F2E7"/>
-<rect x="4" y="4" width="56" height="56" rx="9" fill="none" stroke="#3A332D" stroke-opacity=".18"/>
-<path d="M32 49S15 38.6 15 27.4C15 21.5 19.7 17 24.6 17c3.4 0 6.2 1.9 7.4 4.6 1.2-2.7 4-4.6 7.4-4.6C44.3 17 49 21.5 49 27.4 49 38.6 32 49 32 49z" fill="#BE7381"/>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#1B0F30"/>
+<stop offset="1" stop-color="#0D0716"/>
+</linearGradient>
+<linearGradient id="ht" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#FF8FB2"/>
+<stop offset=".55" stop-color="#FF5C8A"/>
+<stop offset="1" stop-color="#9D7BFF"/>
+</linearGradient>
+</defs>
+<rect width="64" height="64" rx="14" fill="url(#bg)"/>
+<rect x="3.5" y="3.5" width="57" height="57" rx="11" fill="none" stroke="#FFC46B" stroke-opacity=".45"/>
+<path d="M32 49S15 38.6 15 27.4C15 21.5 19.7 17 24.6 17c3.4 0 6.2 1.9 7.4 4.6 1.2-2.7 4-4.6 7.4-4.6C44.3 17 49 21.5 49 27.4 49 38.6 32 49 32 49z" fill="url(#ht)"/>
+<ellipse cx="24" cy="24" rx="4.5" ry="3" transform="rotate(-24 24 24)" fill="#ffffff" opacity=".35"/>
 </svg>

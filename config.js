@@ -3,38 +3,52 @@ window.CONFIG = (() => {
   const wife = "Sania", husband = "Muhammad Ali";
 
   // Optional per-photo details. Keys are photo numbers 1–70.
-  // Example: 7: { caption: "Our favorite evening", date: "June 2023", chapter: "A" }
+  // Example: 7: { caption: "The evening we laughed till we cried", date: "June 2023" }
   const details = {
   };
 
   return {
     wife, husband,
     birthday: "November 4, 2026",
-    slideSeconds: 5,
+    // Used for the live countdown on the opening page.
+    birthdayISO: "2026-11-04T00:00:00",
+    countdown: {
+      title: "Only a few days until your day",
+      today: "Today is the day. Happy Birthday, my love. ❤️",
+      labels: ["days", "hours", "minutes", "seconds"]
+    },
+    slideSeconds: 6,
+    // Shown under a photo when you haven't written a caption for it.
+    captionFallbacks: [
+      "one of my favourites", "just us", "this one makes me smile", "keep this one",
+      "look at you", "my favourite person", "a moment I'd live again"
+    ],
     photoDir: "photos/",
     extensions: ["jpg", "webp", "jpeg", "png"],   // file types the site will look for
     music: { file: "music/song.mp3", volume: 0.4 },   // put your song in /music, or set file: ""
 
-    opening: [
-      "Someone Special Was Born...",
-      "And Someone Very Special Became My World. ❤️",
-      `Happy Birthday, ${wife} 👑`,
-      "I created something beautiful for you, filled with memories, feelings, and a little piece of my heart.",
-      "Begin Your Surprise ❤️"
-    ],
+    // ---- the cover of the album ----
+    hero: {
+      kicker: "for my beloved wife",
+      script: "Happy Birthday,",
+      name: wife,
+      line: "Someone very special was born on this day — and ever since, the world has been softer, warmer, and so much more beautiful.",
+      date: "04 · 11 · 2026",
+      btn: "Open Our Album"
+    },
 
     cake: {
-      title: "Happy Birthday, My Queen",
+      title: "Make a Wish, My Love",
       text: `Today is your day, ${wife}. A day to celebrate your beautiful existence and all the happiness you deserve.`,
-      wishBtn: "Make a Wish ✨",
+      wishBtn: "Blow the candles ✨",
       wish: "May every beautiful dream in your heart find its way into reality.",
-      next: "Continue Our Story"
+      next: "Turn the page"
     },
 
     letter: {
-      title: "A Little Letter, Written Just for You 💌",
-      btn: "Open My Heart",
-      next: "Continue",
+      title: "A letter I wrote for you",
+      btn: "Unfold the letter",
+      next: "Turn the page",
       body: `My Dearest ${wife},
 
 Happy Birthday to the woman who holds such a special place in my heart.
@@ -58,30 +72,30 @@ ${husband} ❤️`
     },
 
     show: {
-      title: "70 Memories. One Beautiful Story. ❤️",
-      subtitle: "Every picture holds a moment. Every moment holds a feeling.",
-      start: "Begin the Story",
-      continue: "Continue"
+      title: "Seventy photographs, one story",
+      subtitle: "Flip through them slowly. Each one is a day I would happily live again.",
+      start: "Start flipping",
+      continue: "Next page"
     },
     chapters: {
-      A: { title: "Every Picture Has a Story ❤️", after: "And these are only the beginning of our beautiful memories..." },
-      B: { title: "Little Moments, Beautiful Memories 🌹", after: "Some moments become memories. Some memories become priceless." },
-      C: { title: "70 Memories, One Special Person 👑", after: "Seventy pictures, but not enough to describe how special you are. ❤️" }
+      A: { title: "Chapter One · Where it all began", after: "And this is only the beginning of our beautiful memories..." },
+      B: { title: "Chapter Two · The little moments", after: "Some moments become memories. Some memories become priceless." },
+      C: { title: "Chapter Three · Still falling for you", after: "Seventy pictures, but not enough to describe how special you are. ❤️" }
     },
-    // photos-01.jpg ... photos-70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
+    // 1.jpg ... 70.jpg (chapter A: 1–24, B: 25–47, C: 48–70 unless overridden)
     photos: Array.from({ length: 70 }, (_, i) =>
-      Object.assign({ file: `photos-${String(i + 1).padStart(2, "0")}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
+      Object.assign({ file: `${i + 1}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
 
-    cardsTitle: "Ten Things That Make You Special",
-    cardsNext: "Continue",
+    cardsTitle: "Ten things I love about you",
+    cardsNext: "Turn the page",
     cards: [
       "Your beautiful smile.", "Your kind heart.", "The happiness you deserve.", "Your unique personality.",
       "Your strength and courage.", "The dreams you carry.", "The little things that make you special.",
       "The beautiful memories we share.", "The person you continue to become.", `Simply being you, ${wife}. ❤️`
     ],
 
-    wishesTitle: "Wishes for Your Future",
-    wishesBtn: "Reveal a wish ✨", wishesMore: "Next wish ✨", wishesDone: "Continue",
+    wishesTitle: "Wishes tucked into your card",
+    wishesBtn: "Unfold a wish ✨", wishesMore: "Another wish ✨", wishesDone: "Turn the page",
     wishes: [
       "I wish you happiness that stays.",
       "I wish you peace when life gets difficult.",
@@ -104,7 +118,7 @@ ${husband} ❤️`
       ],
       title: "70 Memories. Countless Feelings. One Very Special You.",
       end: `Happy Birthday, ${wife}. ❤️`,
-      replay: "Replay Our Story"
+      replay: "Read it again"
     }
   };
 })();

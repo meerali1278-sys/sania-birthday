@@ -36,7 +36,20 @@ Double-click `index.html`, or for the most accurate test run this in the project
 ```
 python3 -m http.server 8000
 ```
-Keys in the slideshow: ← → move, Space plays/pauses, F is full screen.
+Keys in the slideshow: ← → move, Space plays/pauses, F is full screen. On phones use the buttons or the story rail on the left edge.
+
+## 4b. The motion style (reel-style upgrade)
+The site is animated like a short cinematic reel, all in CSS + canvas, no libraries:
+- **Story rail** on the left: 7 dots, one per chapter. Tap any dot to jump there.
+- **Curtain wipe** between chapters: a rose-to-black panel sweeps up while the next chapter swaps underneath, so pages never just pop in.
+- **Kinetic type**: headings and captions are split into words by `script.js` (any element marked `data-k`) and rise out of a mask one word at a time.
+- **Cross-dissolve slideshow**: two stacked `<img>` layers (`#pic`, `#pic2`) fade into each other while a three-way Ken Burns move (zoom-in, zoom-out, diagonal pan) plays differently on every photo.
+- **Reel progress**: 70 hairline segments across the top of the stage, like Instagram story bars, with the gold fill bar underneath.
+- **Atmosphere**: drifting aurora blobs (hue shifts per chapter via the `--hue` variable in `script.js`), film-grain overlay, vignette, ambient dust/petals/stars on the canvas, floating gift and cake.
+- **Micro-interactions**: sheen sweep across buttons, 3D card tilt on hover, parallax on the photo stage, letter unfolding from the envelope, soft 1.6 s volume fade on the music.
+
+Everything above is switched off automatically for visitors with *reduce motion* enabled in their OS, and every animation is CSS-transform/opacity based so it stays smooth on phones.
+Timings live in `style.css` (the `--sp` spring and `--ci` cinematic easing), chapter colours in the `HUE` map in `script.js`.
 
 ## 5. Upload to GitHub
 1. Create a free account at github.com and click **New repository** (name it e.g. `sania-birthday`, Public).

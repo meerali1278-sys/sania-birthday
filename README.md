@@ -1,10 +1,16 @@
-# Letters & Polaroids — for Sania ❤️
+# Midnight Aurora 3D — for Sania ❤️
 
-A birthday website styled like a handmade scrapbook: cream paper, washi tape, tilted
-polaroids and handwritten notes. Plain HTML, CSS and JavaScript — no backend, no build
-step, works on GitHub Pages.
+A birthday website styled like a cinematic night scene: deep plum glass, rose and gold
+glow, and real CSS-3D depth everywhere — a **rotating 3D photo ring** on the cover, a
+photo card that **tilts toward your cursor** (with a moving glare and previous/next
+photos peeking in 3D from the sides), **flip-up glass cards**, countdown cubes that flip
+every second, 3D wishes, and drifting aurora orbs that parallax with the pointer.
+Plain HTML, CSS and JavaScript — no backend, no build step, works on GitHub Pages.
 
-The album runs in seven pages: **cover → cake → letter → 70 polaroids → ten things I love →
+> The previous cream-paper "scrapbook" style lives on in git history (the PR #4 merge)
+> if you ever want it back.
+
+The album runs in seven pages: **cover → cake → letter → 70 photos → ten things I love →
 wishes → final letter**.
 
 ```
@@ -16,20 +22,28 @@ og-image.jpg    <- the preview card shown when the link is shared
 ```
 
 The cover also shows a **live countdown** to her birthday (from `birthdayISO` in
-`config.js`), which turns into a "Today is the day" message once it arrives.
+`config.js`), which turns into a "Today is the day" message once it arrives,
+and a slowly spinning **3D ring of eight of the photos** (hover pauses it).
 
-**The look** lives entirely in `style.css`, at the top in `:root` — five colours control
-the whole album:
+**The look** lives entirely in `style.css`, at the top in `:root` — a handful of colours
+control the whole album:
 
 | Variable | Used for |
 | --- | --- |
-| `--paper` / `--paper-2` | cream page background |
+| `--bg` / `--bg-2` | midnight plum background |
+| `--glass` / `--glass-2`, `--stroke` | the frosted-glass panels and their edges |
 | `--ink` / `--ink-soft` | body text and quiet text |
-| `--rose` / `--rose-deep` | buttons, seals, captions |
-| `--sage`, `--gold` | tape and card accents |
+| `--rose` / `--rose-deep` | buttons, seal, glow accents |
+| `--violet`, `--gold` | ribbons, frames, captions, countdown |
 
-Fonts are Playfair Display (headings), Caveat (handwriting) and Karla (small text),
-loaded from Google Fonts.
+Fonts are Cormorant Garamond (headings), Great Vibes (the romantic script — her name,
+captions) and Outfit (small text), loaded from Google Fonts.
+
+**3D & motion notes**
+- On desktop the slideshow photo and the ten cards tilt in 3D toward the mouse; on a
+  phone you **swipe** the photo left/right to move (buttons and ←/→ keys still work).
+- Everything respects `prefers-reduced-motion`: the ring, tilt, parallax and flips all
+  switch off for visitors who ask their system for less motion.
 
 ## 1. Add the 70 photographs
 1. Name them `1.jpg`, `2.jpg` … `70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern — `1.webp` is fine too.)
@@ -52,7 +66,7 @@ Open `config.js`. Everything is there: the cover wording (`hero`), the cake, the
 the ten cards, the wishes and the final message. Save and refresh.
 
 Two optional extras:
-- `captionFallbacks` — the short handwritten lines shown under a photo when you haven't
+- `captionFallbacks` — the short script lines shown under a photo when you haven't
   written a real caption for it. Replace them with your own if you like.
 - `details` — per-photo captions, e.g. `7: { caption: "The evening we laughed till we cried", date: "June 2023" }`.
   Real captions always beat the fallback lines.
@@ -65,7 +79,7 @@ Double-click `index.html`, or for the most accurate test run this in the project
 ```
 python3 -m http.server 8000
 ```
-Keys in the album: ← → move, Space plays/pauses, F is full screen.
+In the album: ← → move, Space plays/pauses, F is full screen — or swipe the photo on a phone.
 
 ## 5. Upload to GitHub
 1. Create a free account at github.com and click **New repository** (name it e.g. `sania-birthday`, Public).
@@ -89,4 +103,4 @@ If the site ever moves to a new address, update that line (and the `twitter:imag
 If a preview looks out of date after an edit, WhatsApp caches it for a while — add `?v=2` to the link when you resend.
 
 ## 8. Test on a phone
-Open that link on your phone (or scan it as a QR code). Check: opening animation, music button, each chapter, swiping through photos with the buttons, full screen, and the final gift. If an update doesn't appear, refresh twice.
+Open that link on your phone (or scan it as a QR code). Check: the 3D photo ring on the cover, opening animation, music button, each chapter, swiping through photos (and the buttons), full screen, and the final gift. If an update doesn't appear, refresh twice.

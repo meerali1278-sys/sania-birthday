@@ -3,32 +3,60 @@ const C = CONFIG, $ = s => document.querySelector(s), $$ = s => [...document.que
 const RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
 const app = $("#app"), pad = n => String(n).padStart(2, "0");
 
-/* ---------- paper artwork ---------- */
-const ink = "#3A332D";
+/* ---------- 3D helpers: pointer tilt + parallax ---------- */
+const FINE = matchMedia("(pointer:fine)").matches;
+function bindTilt(el, max = 9) {
+  if (RM || !FINE || !el) return;
+  el.addEventListener("pointermove", e => {
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+    el.style.setProperty("--ry", (px * max * 2).toFixed(2) + "deg");
+    el.style.setProperty("--rx", (-py * max * 2).toFixed(2) + "deg");
+    el.style.setProperty("--gx", ((px + .5) * 100).toFixed(1) + "%");
+    el.style.setProperty("--gy", ((py + .5) * 100).toFixed(1) + "%");
+  });
+  el.addEventListener("pointerleave", () => {
+    el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg");
+  });
+}
+if (!RM && FINE) {  // aurora orbs drift against the pointer, for depth
+  let queued = false;
+  addEventListener("pointermove", e => {
+    if (queued) return; queued = true;
+    requestAnimationFrame(() => {
+      document.documentElement.style.setProperty("--mx", (e.clientX / innerWidth - .5).toFixed(3));
+      document.documentElement.style.setProperty("--my", (e.clientY / innerHeight - .5).toFixed(3));
+      queued = false;
+    });
+  }, { passive: true });
+}
+
+/* ---------- neon glass artwork ---------- */
+const ink = "#E9DFF5";
 const gift = `<svg class="gift" viewBox="0 0 120 120" aria-hidden="true">
-<g class="lid"><rect x="16" y="38" width="88" height="18" rx="3" fill="#F3E5D2" stroke="${ink}" stroke-width="2.2"/>
-<ellipse cx="44" cy="29" rx="14" ry="8" transform="rotate(-18 44 29)" fill="none" stroke="${ink}" stroke-width="2.2"/>
-<ellipse cx="76" cy="29" rx="14" ry="8" transform="rotate(18 76 29)" fill="none" stroke="${ink}" stroke-width="2.2"/>
-<circle cx="60" cy="33" r="4.5" fill="#BE7381" stroke="${ink}" stroke-width="2.2"/></g>
-<rect x="22" y="56" width="76" height="48" rx="3" fill="#FFFDF8" stroke="${ink}" stroke-width="2.2"/>
-<rect x="55" y="56" width="10" height="48" fill="#BE7381" opacity=".75"/>
-<path d="M22 76h76" stroke="${ink}" stroke-width="1.2" stroke-dasharray="3 6" opacity=".5"/></svg>`;
+<g class="lid"><rect x="16" y="38" width="88" height="18" rx="4" fill="#3B2166" stroke="${ink}" stroke-width="2.2"/>
+<ellipse cx="44" cy="29" rx="14" ry="8" transform="rotate(-18 44 29)" fill="none" stroke="#FFC46B" stroke-width="2.2"/>
+<ellipse cx="76" cy="29" rx="14" ry="8" transform="rotate(18 76 29)" fill="none" stroke="#FFC46B" stroke-width="2.2"/>
+<circle cx="60" cy="33" r="4.5" fill="#FF5C8A" stroke="${ink}" stroke-width="2.2"/></g>
+<rect x="22" y="56" width="76" height="48" rx="4" fill="#241243" stroke="${ink}" stroke-width="2.2"/>
+<rect x="55" y="56" width="10" height="48" fill="#FF5C8A" opacity=".85"/>
+<path d="M22 76h76" stroke="#FFC46B" stroke-width="1.2" stroke-dasharray="3 6" opacity=".6"/></svg>`;
 
 const cake = `<svg class="cake" viewBox="0 0 240 210" aria-hidden="true">
-${[88, 120, 152].map((x, i) => `<g class="fl" style="--d:${i * .18}s"><path d="M${x} 26c7 9 9 14 3.5 19-2.6 2.6-7.4 2.6-10 0-5.5-5-3.5-10 3.5-19z" fill="#BE7381"/><line x1="${x}" y1="45" x2="${x}" y2="54" stroke="${ink}" stroke-width="2.2"/></g>
-<rect x="${x - 2}" y="54" width="4" height="34" fill="#FFFDF8" stroke="${ink}" stroke-width="1.6"/>`).join("")}
-<rect x="86" y="88" width="68" height="32" rx="3" fill="#FFFDF8" stroke="${ink}" stroke-width="2.2"/>
-<path d="M86 96c5 0 5 8 10 8s5-8 10-8 5 8 10 8 5-8 10-8 5 8 10 8 5-8 10-8 5 8 8 8" fill="none" stroke="#BE7381" stroke-width="2.2" opacity=".8"/>
-<rect x="64" y="120" width="112" height="34" rx="3" fill="#FBF3E6" stroke="${ink}" stroke-width="2.2"/>
-<path d="M64 128c6 0 6 9 12 9s6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9" fill="none" stroke="#8F9E84" stroke-width="2.2" opacity=".85"/>
-<rect x="42" y="154" width="156" height="34" rx="3" fill="#FFFDF8" stroke="${ink}" stroke-width="2.2"/>
-<path d="M42 162c7 0 7 9 14 9s7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9" fill="none" stroke="#BC9558" stroke-width="2.2" opacity=".8"/>
-<line x1="26" y1="192" x2="214" y2="192" stroke="${ink}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+${[88, 120, 152].map((x, i) => `<g class="fl" style="--d:${i * .18}s"><path d="M${x} 26c7 9 9 14 3.5 19-2.6 2.6-7.4 2.6-10 0-5.5-5-3.5-10 3.5-19z" fill="#FFC46B"/><line x1="${x}" y1="45" x2="${x}" y2="54" stroke="${ink}" stroke-width="2.2"/></g>
+<rect x="${x - 2}" y="54" width="4" height="34" fill="#F5EDFF" stroke="${ink}" stroke-width="1.6"/>`).join("")}
+<rect x="86" y="88" width="68" height="32" rx="4" fill="#3B2166" stroke="${ink}" stroke-width="2.2"/>
+<path d="M86 96c5 0 5 8 10 8s5-8 10-8 5 8 10 8 5-8 10-8 5 8 10 8 5-8 10-8 5 8 8 8" fill="none" stroke="#FF5C8A" stroke-width="2.2" opacity=".9"/>
+<rect x="64" y="120" width="112" height="34" rx="4" fill="#2C1850" stroke="${ink}" stroke-width="2.2"/>
+<path d="M64 128c6 0 6 9 12 9s6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9 6-9 12-9 6 9 12 9" fill="none" stroke="#9D7BFF" stroke-width="2.2" opacity=".9"/>
+<rect x="42" y="154" width="156" height="34" rx="4" fill="#241243" stroke="${ink}" stroke-width="2.2"/>
+<path d="M42 162c7 0 7 9 14 9s7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9 7-9 14-9 7 9 14 9" fill="none" stroke="#FFC46B" stroke-width="2.2" opacity=".85"/>
+<line x1="26" y1="192" x2="214" y2="192" stroke="#FFC46B" stroke-width="2.2" stroke-linecap="round" opacity=".8"/></svg>`;
 
-/* ---------- soft paper confetti ---------- */
+/* ---------- stardust & petal confetti ---------- */
 const cv = $("#fx"), g = cv.getContext("2d");
 let W, H, parts = [];
-const PAL = ["#C98A95", "#C4A166", "#9BAB8F", "#D8A9B2"];
+const PAL = ["#FF5C8A", "#FFC46B", "#9D7BFF", "#FF8FB2", "#E9DFF5"];
 const size = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
 size(); addEventListener("resize", size);
 const mk = t => ({
@@ -105,13 +133,28 @@ function tickCountdown() {
   }
   const s = Math.floor(left / 1000);
   const v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
-  box.innerHTML = v.map((n, i) => `<span class="cd-u"><b>${pad(n)}</b><i>${C.countdown.labels[i]}</i></span>`).join("");
+  if (box.childElementCount !== 4 || !box.querySelector(".cd-u")) {
+    box.innerHTML = v.map((n, i) => `<span class="cd-u"><b>${pad(n)}</b><i>${C.countdown.labels[i]}</i></span>`).join("");
+    return;
+  }
+  // update in place so only the digit that changed does the 3D flip
+  box.querySelectorAll(".cd-u b").forEach((b, i) => {
+    const t = pad(v[i]);
+    if (b.textContent !== t) {
+      b.textContent = t;
+      if (!RM) { b.classList.remove("tick"); void b.offsetWidth; b.classList.add("tick"); }
+    }
+  });
 }
 
 /* ---------- slideshow ---------- */
 const N = C.photos.length;
 const TILTS = ["-1.3deg", "-0.5deg", "1.1deg", "0.4deg", "-0.9deg", "1.4deg"];
-const TAPES = ["rgba(190,115,129,.34)", "rgba(143,158,132,.36)", "rgba(188,149,88,.34)"];
+const TAPES = [
+  "linear-gradient(90deg,rgba(255,92,138,.85),rgba(255,196,107,.85))",
+  "linear-gradient(90deg,rgba(157,123,255,.85),rgba(255,92,138,.85))",
+  "linear-gradient(90deg,rgba(255,196,107,.85),rgba(157,123,255,.85))"
+];
 const chOf = i => C.photos[i].chapter || (i < Math.ceil(N / 3) ? "A" : i < Math.ceil(2 * N / 3) ? "B" : "C");
 const sched = () => { clearTimeout(timer); if (playing) timer = setTimeout(next, C.slideSeconds * 1000); };
 const src = (p, e) => C.photoDir + p.file.replace(/\.\w+$/, "") + "." + C.extensions[e];
@@ -131,6 +174,10 @@ function show(i) {
   pic.alt = p.caption || `Memory ${i + 1}`;
   pic.src = src(p, 0);
   if (i + 1 < N) { pre = new Image(); pre.src = src(C.photos[i + 1], 0); }  // only one image preloaded
+  /* coverflow neighbours, peeking in 3D from both sides */
+  const pl = $("#peekL"), pr = $("#peekR");
+  if (pl) { pl.hidden = i === 0; if (i > 0) pl.src = src(C.photos[i - 1], 0); }
+  if (pr) { pr.hidden = i >= N - 1; if (i < N - 1) pr.src = src(C.photos[i + 1], 0); }
   const fallback = C.captionFallbacks[i % C.captionFallbacks.length];
   $("#cap").innerHTML = (p.caption || fallback) + (p.date ? `<small>${p.date}</small>` : "");
   $("#cnt").textContent = `${pad(i + 1)} / ${N}`;
@@ -164,11 +211,16 @@ addEventListener("keydown", e => {
 /* ---------- build ---------- */
 function build() {
   const H_ = C.hero, F = C.final;
+  /* eight memories orbit her name on the cover, in a rotating 3D ring */
+  const ringIdx = [0, 9, 18, 27, 36, 45, 54, 63].filter(i => i < N);
+  const ring = ringIdx.map((pi, k) =>
+    `<span class="ring-item" style="--a:${k * (360 / ringIdx.length)}deg"><img src="${src(C.photos[pi], 0)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.style.display='none'"></span>`).join("");
   app.innerHTML = `
 <section class="ch" id="s-open" data-m="petals"><div class="w">
   <p class="kicker fade" style="--d:.3s">${H_.kicker}</p>
   <h2 class="script fade" style="--d:.55s">${H_.script}</h2>
-  <h1 class="fade" style="--d:.85s">${H_.name}</h1>
+  <h1 class="name3d fade" style="--d:.85s">${H_.name}</h1>
+  <div class="ring-wrap fade" style="--d:1.05s" aria-hidden="true"><div class="ring" id="ring">${ring}</div><div class="ring-glow"></div></div>
   <p class="datestamp fade" style="--d:1.15s">${H_.date}</p>
   <p class="lead fade" style="--d:1.35s">${H_.line}</p>
   <div class="fade" style="--d:1.6s"><button class="btn" data-go="s-cake">${H_.btn}</button></div>
@@ -203,11 +255,16 @@ function build() {
   <div id="inter" hidden><h2 id="it"></h2><button class="btn" id="ib">${C.show.continue}</button></div>
   <div id="player" hidden>
     <p id="chl"></p>
-    <div id="stage"><div class="polaroid" id="pol"><span class="tape" aria-hidden="true"></span>
-      <img id="pic" alt="" decoding="async">
-      <div id="ph" class="pola-ph" hidden></div>
-      <div class="pola-cap"><p id="cap"></p><p id="cnt"></p></div>
-    </div></div>
+    <div id="stage">
+      <img class="peek" id="peekL" alt="" aria-hidden="true" decoding="async" onerror="this.hidden=true">
+      <div class="polaroid" id="pol"><span class="tape" aria-hidden="true"></span><span class="glare" aria-hidden="true"></span>
+        <img id="pic" alt="" decoding="async">
+        <div id="ph" class="pola-ph" hidden></div>
+        <div class="pola-cap"><p id="cap"></p><p id="cnt"></p></div>
+      </div>
+      <img class="peek" id="peekR" alt="" aria-hidden="true" decoding="async" onerror="this.hidden=true">
+    </div>
+    <p class="swipehint">swipe or use the arrows · move your cursor over the photo</p>
     <div id="bar"><i id="fill"></i></div>
     <div class="controls">
       <button class="btn ghost" id="pv">◀ Back</button><button class="btn" id="pp">▶ Play</button><button class="btn ghost" id="nx">Next ▶</button>
@@ -219,7 +276,7 @@ function build() {
 <section class="ch" id="s-cards" data-m="dust"><div class="w">
   <p class="kicker">a little list</p>
   <h1>${C.cardsTitle}</h1>
-  <div class="cards">${C.cards.map((t, i) => `<div class="card" style="--i:${i}">${t}</div>`).join("")}</div>
+  <div class="cards">${C.cards.map((t, i) => `<div class="card tilt3d" style="--i:${i}"><span class="card-num" aria-hidden="true">${pad(i + 1)}</span><p>${t}</p></div>`).join("")}</div>
   <button class="btn ghost" data-go="s-wishes">${C.cardsNext}</button>
 </div></section>
 
@@ -257,6 +314,18 @@ function build() {
   $("#nx").onclick = next; $("#pv").onclick = prev; $("#pp").onclick = () => play(!playing);
   $("#rs").onclick = () => { play(false); show(0); };
   $("#fs").onclick = () => document.fullscreenElement ? document.exitFullscreen() : ($("#stage").requestFullscreen || (() => {})).call($("#stage"));
+  /* 3D tilt on the photo card and the ten glass cards; swipe on the stage */
+  bindTilt($("#pol"), 8);
+  $$(".tilt3d").forEach(el => bindTilt(el, 7));
+  let swipeX = null;
+  const stage = $("#stage");
+  stage.addEventListener("pointerdown", e => { swipeX = e.clientX; }, { passive: true });
+  stage.addEventListener("pointerup", e => {
+    if (swipeX === null || $("#player").hidden) return;
+    const dx = e.clientX - swipeX; swipeX = null;
+    if (dx <= -42) next(); else if (dx >= 42) prev();
+  }, { passive: true });
+  stage.addEventListener("pointercancel", () => { swipeX = null; }, { passive: true });
   /* wishes */
   let wi = 0;
   $("#wb").onclick = () => {

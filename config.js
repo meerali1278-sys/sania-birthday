@@ -34,7 +34,7 @@ window.CONFIG = (() => {
       name: wife,
       line: "Someone very special was born on this day — and ever since, the world has been softer, warmer, and so much more beautiful.",
       date: "04 · 11 · 2026",
-      btn: "Open Our Album"
+      btn: "Step Into Your Surprise ✨"
     },
 
     cake: {
@@ -42,13 +42,13 @@ window.CONFIG = (() => {
       text: `Today is your day, ${wife}. A day to celebrate your beautiful existence and all the happiness you deserve.`,
       wishBtn: "Blow the candles ✨",
       wish: "May every beautiful dream in your heart find its way into reality.",
-      next: "Turn the page"
+      next: "Continue ✨"
     },
 
     letter: {
       title: "A letter I wrote for you",
       btn: "Unfold the letter",
-      next: "Turn the page",
+      next: "Continue ✨",
       body: `My Dearest ${wife},
 
 Happy Birthday to the woman who holds such a special place in my heart.
@@ -72,10 +72,10 @@ ${husband} ❤️`
     },
 
     show: {
-      title: "Seventy photographs, one story",
-      subtitle: "Flip through them slowly. Each one is a day I would happily live again.",
-      start: "Start flipping",
-      continue: "Next page"
+      title: "Seventy photographs, floating in one story",
+      subtitle: "Move through them slowly — swipe, tilt, take your time. Each one is a day I would happily live again.",
+      start: "Begin the Journey",
+      continue: "Continue"
     },
     chapters: {
       A: { title: "Chapter One · Where it all began", after: "And this is only the beginning of our beautiful memories..." },
@@ -87,15 +87,15 @@ ${husband} ❤️`
       Object.assign({ file: `${i + 1}.jpg`, caption: "", date: "", chapter: "" }, details[i + 1])),
 
     cardsTitle: "Ten things I love about you",
-    cardsNext: "Turn the page",
+    cardsNext: "Continue ✨",
     cards: [
       "Your beautiful smile.", "Your kind heart.", "The happiness you deserve.", "Your unique personality.",
       "Your strength and courage.", "The dreams you carry.", "The little things that make you special.",
       "The beautiful memories we share.", "The person you continue to become.", `Simply being you, ${wife}. ❤️`
     ],
 
-    wishesTitle: "Wishes tucked into your card",
-    wishesBtn: "Unfold a wish ✨", wishesMore: "Another wish ✨", wishesDone: "Turn the page",
+    wishesTitle: "Six wishes, written in the stars",
+    wishesBtn: "Reveal a wish ✨", wishesMore: "Another wish ✨", wishesDone: "Continue ✨",
     wishes: [
       "I wish you happiness that stays.",
       "I wish you peace when life gets difficult.",
@@ -118,7 +118,7 @@ ${husband} ❤️`
       ],
       title: "70 Memories. Countless Feelings. One Very Special You.",
       end: `Happy Birthday, ${wife}. ❤️`,
-      replay: "Read it again"
+      replay: "Experience it again"
     }
   };
 })();

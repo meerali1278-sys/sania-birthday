@@ -13,7 +13,7 @@ window.CONFIG = (() => {
     slideSeconds: 5,
     photoDir: "photos/",
     extensions: ["jpg", "webp", "jpeg", "png"],   // file types the site will look for
-    music: { file: "music/song.mp4", volume: 0.4 },   // put your song in /music (mp3 or mp4 both work), or set file: ""
+    music: { file: "music/song.mp3", volume: 0.4 },   // put your song in /music, or set file: ""
 
     opening: [
       "Someone Special Was Born...",

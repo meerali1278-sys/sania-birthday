@@ -1,2 +1,50 @@
-# sania-birthday
-Special Birthday Surprise for Sania ❤️
+# 70 Memories, One Love — Sania ❤️
+
+A cinematic birthday website: plain HTML, CSS and JavaScript. No backend, no build step, works on GitHub Pages.
+
+```
+index.html  style.css  script.js  config.js  README.md
+photos/   <- your 70 images
+music/    <- optional song
+```
+
+## 1. Add the 70 photographs
+1. Name them `photo-01.jpg`, `photo-02.jpg` … `photo-70.jpg`. (JPG, WebP, JPEG and PNG all work. Just keep the same name pattern.)
+2. Put them in the `photos/` folder.
+3. Phone photos are often 3–8 MB, which is slow. Resize them first (about 1600 px on the long side, under 500 KB each). Free tool: https://squoosh.app (keep JPG, or choose WebP).
+
+Missing photos show a placeholder, so you can add them gradually. Only the current and next photo are loaded at any time.
+Chapters: A = 1–24, B = 25–47, C = 48–70.
+
+Captions, dates and chapters are optional. In `config.js`, fill in `details`:
+```js
+const details = {
+  7: { caption: "Your own words here", date: "Your date here" },
+};
+```
+Nothing is invented. Anything you leave empty is simply not shown.
+
+## 2. Edit the messages
+Open `config.js`. Names, birthday, the letter, the ten cards, the wishes and the final message are all there. Save and refresh.
+
+## 3. Add background music (optional)
+Copy an `.mp3` you have the right to use to `music/song.mp3` (or change `music.file` in `config.js`). Music never starts by itself: the visitor taps the **♪ Music** button.
+
+## 4. Test locally
+Double-click `index.html`, or for the most accurate test run this in the project folder and open http://localhost:8000
+```
+python3 -m http.server 8000
+```
+Keys in the slideshow: ← → move, Space plays/pauses, F is full screen.
+
+## 5. Upload to GitHub
+1. Create a free account at github.com and click **New repository** (name it e.g. `sania-birthday`, Public).
+2. Click **uploading an existing file**, drag in everything in this folder (including `photos` and `music`), then **Commit changes**.
+   For 70 images in a browser upload, add them in a few batches (GitHub limits ~100 files per upload).
+
+## 6. Enable GitHub Pages
+Repository **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: `main`, folder `/ (root)` → Save.**
+After about a minute your site is at `https://YOUR-USERNAME.github.io/sania-birthday/`.
+
+## 7. Test on a phone
+Open that link on your phone (or scan it as a QR code). Check: opening animation, music button, each chapter, swiping through photos with the buttons, full screen, and the final gift. If an update doesn't appear, refresh twice.

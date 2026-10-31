@@ -51,6 +51,8 @@ function go(id) {
   clearTimeout(timer); playing = false;
   $$(".ch").forEach(s => s.classList.toggle("on", s.id === id));
   const s = $("#" + id); amb(s.dataset.m); s.scrollTop = 0;
+  const J = C.jarvis || {}, hud = $("#hud");
+  if (J.enabled && hud) hud.querySelector(".jt").textContent = id === "s-final" ? (J.hudFinal || J.hud || "") : (J.hud || "");
   if (id === "s-show") initShow();
 }
 
@@ -102,8 +104,13 @@ addEventListener("keydown", e => {
 /* ---------- build ---------- */
 function build() {
   const o = C.opening, F = C.final;
+  const J = C.jarvis || {};
+  const jarvisBoot = J.enabled
+    ? `<p class="jarvis-boot fade" style="--d:.2s"><i class="jd" aria-hidden="true"></i>${J.boot || ""}</p>`
+    : "";
   app.innerHTML = `
 <section class="ch" id="s-open" data-m="dust"><div class="w">
+  ${jarvisBoot}
   <h2 class="fade" style="--d:.8s">${o[0]}</h2>
   <h2 class="fade" style="--d:3.8s">${o[1]}</h2>
   <h1 class="fade" style="--d:7s">${o[2]}</h1>
@@ -158,6 +165,18 @@ function build() {
   <h2 class="fade" style="--d:${4 + F.lines.length * 3}s">${F.end}</h2>
   <button class="btn g fade" id="rp" style="--d:${5 + F.lines.length * 3}s">${F.replay}</button>
 </div></div></section>`;
+
+  /* jarvis status label */
+  if (J.enabled) {
+    let hud = $("#hud");
+    if (!hud) {
+      hud = document.createElement("div");
+      hud.id = "hud"; hud.setAttribute("aria-hidden", "true");
+      hud.innerHTML = `<i class="hd"></i><span class="jt"></span>`;
+      document.body.appendChild(hud);
+    }
+    hud.querySelector(".jt").textContent = J.hud || "";
+  }
 
   /* chapter 2 */
   $("#wishBtn").onclick = () => {

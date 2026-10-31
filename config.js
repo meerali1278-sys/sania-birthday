@@ -15,6 +15,14 @@ window.CONFIG = (() => {
     extensions: ["jpg", "webp", "jpeg", "png"],   // file types the site will look for
     music: { file: "music/song.mp3", volume: 0.4 },   // put your song in /music, or set file: ""
 
+    // A quiet J.A.R.V.I.S. touch. Set enabled:false to remove it completely.
+    jarvis: {
+      enabled: true,
+      boot: "J.A.R.V.I.S. online — one very important message",   // small line above the opening
+      hud: "all systems online",                                   // faint label, bottom-left
+      hudFinal: "mission complete"                                 // label once the story ends
+    },
+
     opening: [
       "Someone Special Was Born...",
       "And Someone Very Special Became My World. ❤️",
